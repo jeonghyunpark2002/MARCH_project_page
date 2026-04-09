@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="MARCH: Evaluating the Intersection of Ambiguity Interpretation and Multi-hop Inference">
+  <meta name="keywords" content="MARCH, CLARION, Multi-hop QA, Ambiguity, Question Answering, NLP, ACL 2026">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MARCH | ACL 2026</title>
+  <link rel="icon" href="https://fav.farm/🔍" />
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    .hero { background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%); }
+    .section-title { border-left: 4px solid #3273dc; padding-left: 0.75rem; margin-bottom: 1.5rem; }
+    .result-table th { background-color: #f5f5f5; font-weight: 700; }
+    .result-table td, .result-table th { padding: 0.5rem 0.75rem; text-align: center; }
+    .result-table tr:hover { background-color: #fafafa; }
+    .best { font-weight: 700; }
+    .second { text-decoration: underline; }
+    .ours-row { background-color: #fffde7 !important; }
+    .method-badge {
+      display: inline-block;
+      background: #3273dc;
+      color: white;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+    .tag-pill {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #1a56db;
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.9em;
+      margin: 3px;
+      font-weight: 500;
+    }
+    .figure-caption {
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+    .bibtex-box {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      line-height: 1.6;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .stat-box {
+      background: white;
+      border: 2px solid #e8f0fe;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(50,115,220,0.08);
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #3273dc;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+    .taxonomy-card {
+      border: 1.5px solid #e0e7ff;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      background: #fafbff;
+    }
+    .taxonomy-card .type-name { font-weight: 700; font-size: 1.05em; color: #1a56db; }
+    .taxonomy-card .action-label { 
+      display: inline-block;
+      background: #e8f0fe; 
+      color: #1a56db; 
+      border-radius: 4px; 
+      padding: 1px 8px; 
+      font-size: 0.8em; 
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .human-row { background-color: #f0fff0 !important; font-style: italic; }
+    .sep-row td { background: #f0f4ff; font-weight: 700; font-style: italic; color: #3273dc; text-align: left; padding-left: 1rem; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar" role="navigation" aria-label="main navigation" style="background: white; border-bottom: 1px solid #eee;">
+  <div class="navbar-center" style="display:flex; justify-content:center; width:100%; padding: 0.5rem 0;">
+    <a class="navbar-item" href="https://ai.cau.ac.kr/" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; gap:0.5rem;">
+      <span style="font-weight:700; font-size:1.05em; color:#333;">Department of Artificial Intelligence · Chung-Ang University</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Hero / Title -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+
+          <div style="margin-bottom:1rem;">
+            <span class="tag-pill">ACL 2026</span>
+            <span class="tag-pill">Multi-hop QA</span>
+            <span class="tag-pill">Ambiguity</span>
+            <span class="tag-pill">Benchmark</span>
+          </div>
+
+          <h1 class="title is-3 publication-title">
+            MARCH: Evaluating the Intersection of<br>Ambiguity Interpretation and Multi-hop Inference
+          </h1>
+
+          <div class="is-size-5 publication-authors" style="margin-top:1rem;">
+            <span class="author-block">Jeonghyun Park<sup>1*</sup>,&nbsp;</span>
+            <span class="author-block">Ingeol Baek<sup>1*</sup>,&nbsp;</span>
+            <span class="author-block">Seunghyun Yoon<sup>2</sup>,&nbsp;</span>
+            <span class="author-block">Haeun Jang<sup>1</sup>,&nbsp;</span>
+            <span class="author-block">Aparna Garimella<sup>2</sup>,&nbsp;</span>
+            <span class="author-block">Akriti Jain<sup>2</sup>,&nbsp;</span>
+            <span class="author-block">Nedim Lipka<sup>2</sup>,&nbsp;</span>
+            <span class="author-block">Hwanhee Lee<sup>1†</sup></span>
+          </div>
+
+          <div class="is-size-6" style="margin-top:0.5rem; color:#666;">
+            <sup>*</sup>Equal contribution &nbsp;·&nbsp; <sup>†</sup>Corresponding author
+          </div>
+
+          <div class="is-size-5 publication-authors" style="margin-top:0.75rem;">
+            <span class="author-block"><sup>1</sup>Department of Artificial Intelligence, Chung-Ang University&nbsp;&nbsp;</span>
+            <span class="author-block"><sup>2</sup>Adobe Research</span>
+          </div>
+
+          <!-- Links -->
+          <div class="column has-text-centered" style="margin-top:1.25rem;">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-database"></i></span>
+                  <span>Dataset</span>
+                </a>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Key stats row -->
+<section class="section" style="padding: 2rem 1.5rem; background: #f8faff;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered is-vcentered">
+      <div class="column is-3">
+        <div class="stat-box">
+          <div class="stat-number">2,209</div>
+          <div class="stat-label">Ambiguous Multi-hop Questions</div>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="stat-box">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Ambiguity Types (Semantic, Syntactic, Constraint)</div>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="stat-box">
+          <div class="stat-number">0.95</div>
+          <div class="stat-label">Fleiss' κ Inter-annotator Agreement</div>
+        </div>
+      </div>
+      <div class="column is-3">
+        <div class="stat-box">
+          <div class="stat-number">2.44</div>
+          <div class="stat-label">Avg. Hops (Ambiguous Questions)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Abstract -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 has-text-centered section-title" style="border-left:none; text-align:center;">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Real-world multi-hop QA is naturally linked with ambiguity, where a single query can trigger multiple reasoning paths that require independent resolution. Since ambiguity can occur at any stage, models must navigate layered uncertainty throughout the entire reasoning chain.
+          </p>
+          <p>
+            Despite its prevalence in real-world user queries, previous benchmarks have primarily focused on single-hop ambiguity, leaving the complex interaction between multi-step inference and layered ambiguity underexplored. In this paper, we introduce <strong>MARCH</strong>, a benchmark for their intersection, with <strong>2,209 multi-hop ambiguous questions</strong> curated via multi-LLM verification and validated by human annotation with strong agreement.
+          </p>
+          <p>
+            Our experiments reveal that even state-of-the-art models struggle with MARCH, confirming that combining ambiguity resolution with multi-step reasoning is a significant challenge. To address this, we propose <strong>CLARION</strong>, a two-stage agentic framework that explicitly decouples ambiguity planning from evidence-driven reasoning, significantly outperforms existing approaches, and paves the way for robust reasoning systems.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Motivation -->
+<section class="section" style="background: #f8faff;">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">🎯 Motivation</h2>
+
+    <div class="content">
+      <h3 class="title is-4">The Challenge of Multi-hop Ambiguous QA</h3>
+      <p>
+        Multi-hop Question Answering presents a significant reasoning challenge, requiring models to construct logical chains by connecting disparate pieces of information. The intersection of multi-hop reasoning and ambiguity creates a uniquely difficult setting where <strong>uncertainty scales exponentially</strong>.
+      </p>
+      <p>
+        In multi-hop ambiguous QA, ambiguity can emerge at any step of the reasoning chain, often remaining <em>latent</em> until prior steps are resolved.
+      </p>
+    </div>
+
+    <figure style="margin: 2rem 0;">
+      <img src="./static/images/fig_motivation.png" alt="Multi-hop ambiguity motivation example" style="width:100%; border-radius:8px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+      <figcaption class="figure-caption">
+        <strong>Figure 1.</strong> An example of multi-hop ambiguity QA. The ambiguity of the second hop ("pickup") is latent; it is only detectable if the alternative interpretation of the first hop ("Mustang" as guitar) is preserved. Current LLMs commit early to the car reading and prune the valid guitar → magnetic-pickup branch.
+      </figcaption>
+    </figure>
+
+    <div class="columns" style="margin-top: 2rem;">
+      <div class="column">
+        <div class="taxonomy-card">
+          <div>
+            <span class="type-name">🔷 Semantic Ambiguity</span>
+            <span class="action-label">Interpret</span>
+          </div>
+          <p style="margin-top:0.5rem; font-size:0.95em;">
+            Homonyms/aliases or entity-name collisions (one name → multiple entities) yielding disjoint evidence trails. Choosing the wrong entity invalidates downstream hops.
+          </p>
+          <p style="font-size:0.85em; color:#888;"><em>Example: "Mustang" → Ford (car) vs. Fender (guitar)</em></p>
+        </div>
+      </div>
+      <div class="column">
+        <div class="taxonomy-card">
+          <div>
+            <span class="type-name">🔶 Syntactic Ambiguity</span>
+            <span class="action-label">Resolve</span>
+          </div>
+          <p style="margin-top:0.5rem; font-size:0.95em;">
+            Multiple valid parses induce different inter-hop dependencies, changing which intermediate evidence is needed. Cues: pronouns, PP attachment, coordination.
+          </p>
+          <p style="font-size:0.85em; color:#888;"><em>Example: Instrumental vs. Attributive reading of telescope question</em></p>
+        </div>
+      </div>
+      <div class="column">
+        <div class="taxonomy-card">
+          <div>
+            <span class="type-name">🟢 Constraint Ambiguity</span>
+            <span class="action-label">Generalize</span>
+          </div>
+          <p style="margin-top:0.5rem; font-size:0.95em;">
+            An over-specific modifier is unnecessary or mismatched with evidence granularity, causing a valid chain to be pruned early. Relaxing the constraint recovers the path.
+          </p>
+          <p style="font-size:0.85em; color:#888;"><em>Example: "highest mountain in Europe" → Mont Blanc vs. Elbrus</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content" style="margin-top:1.5rem;">
+      <p>
+        Analysis of real-world user queries from the <em>lmsys-chat-1m corpus</em> reveals that <strong>48.4% of questions are ambiguous</strong>, <strong>17.7% involve multi-hop reasoning</strong>, and <strong>13.3% overlap</strong>—yet no benchmark specifically targets this intersection.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- MARCH Dataset -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">📊 MARCH: A Benchmark for Multi-Hop Ambiguous QA</h2>
+
+    <div class="content">
+      <p>
+        We introduce <strong>MARCH (Multi-hop Ambiguity Reasoning CHain)</strong>, a benchmark with <strong>2,209 multi-hop ambiguous questions</strong> derived from MuSiQue. Each example is paired with type-specific clarified questions, interpretation-grounded short answers, supporting evidence passages, and a synthesized long answer.
+      </p>
+    </div>
+
+    <figure style="margin: 2rem 0;">
+      <img src="./static/images/fig_pipeline.png" alt="MARCH dataset construction pipeline" style="width:100%; border-radius:8px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+      <figcaption class="figure-caption">
+        <strong>Figure 2.</strong> Overview of the four-stage MARCH dataset construction pipeline: (1) Ambiguity detection &amp; clarification, (2) Document collection, (3) Short &amp; long answer generation, (4) Filtering.
+      </figcaption>
+    </figure>
+
+    <!-- Construction steps -->
+    <div class="columns is-multiline" style="margin-top:1.5rem;">
+      <div class="column is-half">
+        <div style="border:1.5px solid #e0e7ff; border-radius:10px; padding:1.25rem; height:100%;">
+          <p style="font-weight:700; color:#3273dc; margin-bottom:0.5rem;">① Ambiguity Detection &amp; Clarification</p>
+          <p style="font-size:0.93em;">Four LLMs (GPT-4.1, Llama-4-Maverick, Qwen3-235B, Claude-Sonnet-4) vote with <strong>full-agreement rule</strong>—a type label is assigned only when all four detectors agree, reducing single-model bias.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div style="border:1.5px solid #e0e7ff; border-radius:10px; padding:1.25rem; height:100%;">
+          <p style="font-weight:700; color:#3273dc; margin-bottom:0.5rem;">② Document Collection</p>
+          <p style="font-size:0.93em;">Clarified questions are decomposed into atomic sub-questions, retrieved from English Wikipedia, and re-ranked with <em>Qwen3-8B-Embedding</em> for evidence aligned with each interpretation.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div style="border:1.5px solid #e0e7ff; border-radius:10px; padding:1.25rem; height:100%;">
+          <p style="font-weight:700; color:#3273dc; margin-bottom:0.5rem;">③ Answer Generation</p>
+          <p style="font-size:0.93em;">GPT-4.1 produces per-interpretation short answers and a synthesized long answer that connects all interpretations into a coherent statement.</p>
+        </div>
+      </div>
+      <div class="column is-half">
+        <div style="border:1.5px solid #e0e7ff; border-radius:10px; padding:1.25rem; height:100%;">
+          <p style="font-weight:700; color:#3273dc; margin-bottom:0.5rem;">④ Filtering &amp; Quality Control</p>
+          <p style="font-size:0.93em;">Three LLMs independently verify alignment. Only unanimous cases are retained. Validated by 5 human annotators with Fleiss' κ up to <strong>0.95</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Human validation highlight -->
+    <div style="background:#e8f5e9; border-radius:10px; padding:1.25rem 1.5rem; margin-top:1.5rem; border-left:4px solid #4caf50;">
+      <strong>✅ Human Validation:</strong> Stratified sample of 60 instances (20 per type), annotated by 5 experts.
+      Over <strong>90% long-answer validity</strong> (all interpretations integrated) and strong inter-annotator agreement:
+      Ambiguity detection κ = <strong>0.92</strong> · Clarification quality κ = <strong>0.89</strong> · Answer consistency κ = <strong>0.95</strong>
+    </div>
+  </div>
+</section>
+
+<!-- CLARION Framework -->
+<section class="section" style="background: #f8faff;">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">🧠 CLARION: Agentic Framework</h2>
+
+    <div class="content">
+      <p>
+        We propose <strong>CLARION (CLarifying Ambiguity with a Reasoning and InstructiON)</strong>, a two-stage agentic framework that explicitly decouples <em>ambiguity planning</em> from <em>evidence retrieval</em>.
+      </p>
+      <p>
+        Standard retrieval methods typically fail by committing to a single dominant interpretation, thereby pruning alternative paths. CLARION overcomes this by separating <strong>Planning</strong> from <strong>Acting</strong>.
+      </p>
+    </div>
+
+    <figure style="margin: 2rem 0;">
+      <img src="./static/images/fig_method.png" alt="CLARION framework overview" style="width:100%; border-radius:8px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+      <figcaption class="figure-caption">
+        <strong>Figure 3.</strong> Overview of the CLARION framework. A <em>Planning Agent</em> resolves ambiguity, and an <em>Acting Agent</em> executes a ReAct loop to generate the final answer.
+      </figcaption>
+    </figure>
+
+    <div class="columns" style="margin-top:1.5rem;">
+      <div class="column">
+        <div style="background:white; border-radius:12px; padding:1.5rem; border:2px solid #bbdefb; height:100%;">
+          <h4 class="title is-5" style="color:#1565c0;">🗺️ Planning Agent</h4>
+          <ol style="font-size:0.93em; padding-left:1.2rem;">
+            <li style="margin-bottom:0.5rem;"><strong>Ambiguity Detection</strong> — determines if the question is ambiguous; if not, passes directly to Acting Agent</li>
+            <li style="margin-bottom:0.5rem;"><strong>Type Classification</strong> — categorizes into Syntactic, Constraint, or Semantic</li>
+            <li><strong>Question Clarification</strong> — rewrites into clarified variants that resolve ambiguity while preserving the information need</li>
+          </ol>
+        </div>
+      </div>
+      <div class="column">
+        <div style="background:white; border-radius:12px; padding:1.5rem; border:2px solid #c8e6c9; height:100%;">
+          <h4 class="title is-5" style="color:#2e7d32;">⚡ Acting Agent (ReAct Loop)</h4>
+          <p style="font-size:0.93em; margin-bottom:0.75rem;">Executes a <strong>Thought → Action → Observation</strong> loop for each clarified interpretation. Three possible actions:</p>
+          <ul style="font-size:0.93em; padding-left:1.2rem;">
+            <li style="margin-bottom:0.4rem;"><strong>Search</strong> — retrieve external documents</li>
+            <li style="margin-bottom:0.4rem;"><strong>Planning</strong> — self-correction: refine/expand the interpretation set when evidence inconsistencies are observed</li>
+            <li><strong>Answer</strong> — synthesize final output covering all interpretations</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Experiments -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">📈 Experiments</h2>
+
+    <div class="content">
+      <p>We evaluate three state-of-the-art LLMs on MARCH: <em>Qwen3-235B</em>, <em>Gemini-2.5-Flash</em>, and <em>DeepSeek-v3.1</em>.
+      All systems share the same retriever (Qwen3-Embedding-8B) and identical retrieval hyperparameters for fair comparison.</p>
+      <p><strong>Metrics:</strong> STR-EM (Strict Exact Match), Disambig-F1 (per-interpretation extractive QA), and LLM-as-a-Judge (0–5 across Relevance, Faithfulness, Informativeness, Correctness).</p>
+    </div>
+
+    <!-- Main results table -->
+    <div class="table-container" style="margin: 2rem 0; overflow-x:auto;">
+      <table class="table is-bordered is-striped is-hoverable result-table" style="width:100%; font-size:0.9em;">
+        <thead>
+          <tr style="background:#3273dc; color:white;">
+            <th style="color:white;">Model</th>
+            <th style="color:white;">Method</th>
+            <th style="color:white;">STR-EM ↑</th>
+            <th style="color:white;">Disambig-F1 ↑</th>
+            <th style="color:white;">Avg ↑</th>
+            <th style="color:white;">LLM-Judge ↑</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="sep-row"><td colspan="6">Qwen3-235B</td></tr>
+          <tr><td></td><td>No Retrieval</td><td>20.98</td><td>21.19</td><td>21.09</td><td><span class="second">3.083</span></td></tr>
+          <tr><td></td><td>CoT</td><td>21.51</td><td>22.32</td><td>21.91</td><td>2.897</td></tr>
+          <tr><td></td><td>NaiveRAG</td><td>25.10</td><td><span class="second">26.20</span></td><td>25.65</td><td>2.752</td></tr>
+          <tr><td></td><td>CoT w/ RAG</td><td>25.63</td><td>26.61</td><td>26.12</td><td>2.947</td></tr>
+          <tr><td></td><td>DIVA</td><td><span class="second">28.82</span></td><td>22.73</td><td><span class="second">25.78</span></td><td>3.015</td></tr>
+          <tr><td></td><td>ReAct</td><td>20.98</td><td>21.00</td><td>20.99</td><td>2.832</td></tr>
+          <tr class="ours-row"><td></td><td><strong>CLARION (Ours)</strong></td><td class="best">38.73</td><td class="best">28.38</td><td class="best">33.56</td><td class="best">3.474</td></tr>
+          <tr><td></td><td style="color:#888; font-size:0.9em;">— w/o clarification</td><td>25.10</td><td>25.56</td><td>25.33</td><td>2.922</td></tr>
+          <tr><td></td><td style="color:#888; font-size:0.9em;">— w/o clarif. &amp; detect.</td><td>22.94</td><td>24.02</td><td>23.48</td><td>2.782</td></tr>
+
+          <tr class="sep-row"><td colspan="6">Gemini-2.5-Flash</td></tr>
+          <tr><td></td><td>No Retrieval</td><td>15.59</td><td>20.10</td><td>17.85</td><td>2.307</td></tr>
+          <tr><td></td><td>CoT</td><td>16.32</td><td>17.52</td><td>16.92</td><td>2.258</td></tr>
+          <tr><td></td><td>NaiveRAG</td><td>22.16</td><td class="best">28.63</td><td><span class="second">25.40</span></td><td>2.297</td></tr>
+          <tr><td></td><td>CoT w/ RAG</td><td>23.15</td><td>27.31</td><td>25.23</td><td>2.373</td></tr>
+          <tr><td></td><td>DIVA</td><td>18.82</td><td>20.29</td><td>19.56</td><td>2.303</td></tr>
+          <tr><td></td><td>ReAct</td><td>21.32</td><td>22.37</td><td>21.84</td><td>2.428</td></tr>
+          <tr class="ours-row"><td></td><td><strong>CLARION (Ours)</strong></td><td class="best">29.12</td><td><span class="second">26.30</span></td><td class="best">27.71</td><td class="best">2.752</td></tr>
+          <tr><td></td><td style="color:#888; font-size:0.9em;">— w/o clarification</td><td><span class="second">24.12</span></td><td>22.54</td><td>23.33</td><td><span class="second">2.609</span></td></tr>
+          <tr><td></td><td style="color:#888; font-size:0.9em;">— w/o clarif. &amp; detect.</td><td>23.82</td><td>22.04</td><td>22.93</td><td>2.573</td></tr>
+
+          <tr class="sep-row"><td colspan="6">DeepSeek-v3.1</td></tr>
+          <tr><td></td><td>No Retrieval</td><td>17.75</td><td>18.72</td><td>18.24</td><td>2.683</td></tr>
+          <tr><td></td><td>CoT</td><td>19.80</td><td>22.12</td><td>20.96</td><td>2.512</td></tr>
+          <tr><td></td><td>NaiveRAG</td><td>20.20</td><td><span class="second">25.03</span></td><td>22.62</td><td>2.084</td></tr>
+          <tr><td></td><td>CoT w/ RAG</td><td>21.33</td><td>23.18</td><td>22.25</td><td>2.632</td></tr>
+          <tr><td></td><td>DIVA</td><td>18.82</td><td>20.66</td><td>19.74</td><td>2.636</td></tr>
+          <tr><td></td><td>ReAct</td><td>23.17</td><td>24.78</td><td>23.97</td><td>2.723</td></tr>
+          <tr class="ours-row"><td></td><td><strong>CLARION (Ours)</strong></td><td class="best">31.47</td><td class="best">27.03</td><td class="best">29.25</td><td class="best">3.042</td></tr>
+          <tr><td></td><td style="color:#888; font-size:0.9em;">— w/o clarification</td><td>23.63</td><td>22.99</td><td>23.31</td><td><span class="second">2.927</span></td></tr>
+          <tr><td></td><td style="color:#888; font-size:0.9em;">— w/o clarif. &amp; detect.</td><td><span class="second">24.51</span></td><td>24.31</td><td><span class="second">24.41</span></td><td>2.906</td></tr>
+
+          <tr class="human-row">
+            <td colspan="2">Human Performance</td>
+            <td>73.00</td><td>62.00</td><td>67.50</td><td>—</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.82em; color:#777; text-align:center;">Table 1. MARCH benchmark results. Metrics scaled to percentages. <strong>Bold</strong> = best; <span class="second" style="font-size:1em;">underline</span> = second best. 🟡 rows = CLARION (Ours).</p>
+    </div>
+
+    <div style="background:#fff3e0; border-radius:10px; padding:1.25rem 1.5rem; margin-top:0.5rem; border-left:4px solid #ff9800;">
+      <strong>⚠️ The Human Gap:</strong> Human annotators with unrestricted web search achieved STR-EM = 73.0 and Disambig-F1 = 62.0, while CLARION's best result is STR-EM = 38.73 and Disambig-F1 = 28.38 — confirming MARCH poses a <strong>significant, unsolved challenge</strong> for current reasoning systems.
+    </div>
+
+    <!-- Analysis figure -->
+    <figure style="margin: 2.5rem 0;">
+      <img src="./static/images/fig_analysis.png" alt="Analysis results" style="width:100%; border-radius:8px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+      <figcaption class="figure-caption">
+        <strong>Figure 4.</strong> Analysis of CLARION's performance. Consistent ordering across ambiguity types: Constraint &gt; Syntactic ≈ Semantic. Semantic ambiguity is hardest as it most directly alters the hop structure and bridge entity selection.
+      </figcaption>
+    </figure>
+
+    <!-- Isolation analysis -->
+    <div class="content" style="margin-top:1.5rem;">
+      <h3 class="title is-4">Isolating Multi-hop and Ambiguity Effects</h3>
+      <p>
+        Modern RAG and agentic baselines perform reasonably well on single-hop ambiguity (ASQA) and standard multi-hop reasoning (MuSiQue) in isolation. However, <strong>this success does not transfer to MARCH</strong>, where ambiguity is latent and path-dependent. Early interpretation choices fix bridge entities, steer downstream retrieval, and prune alternative branches — causing cascading errors across hops.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Challenge figure -->
+<section class="section" style="background: #f8faff;">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 section-title">🔍 Why is MARCH Hard?</h2>
+    <figure style="margin: 1rem 0 2rem 0;">
+      <img src="./static/images/fig_challenge.png" alt="Challenge analysis" style="width:100%; border-radius:8px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+      <figcaption class="figure-caption">
+        <strong>Figure 5.</strong> Performance drops under ambiguity and multi-hop reasoning. The combination creates a compounding challenge that exceeds either difficulty in isolation.
+      </figcaption>
+    </figure>
+    <div class="content">
+      <p>
+        The failure of existing methods is largely <strong>path-dependent</strong>: committing to an early interpretation conditions downstream decomposition and retrieval. Each hop's output serves as the input to the next — a misresolved ambiguity at hop 1 fixes an incorrect bridge entity, which steers hop 2 retrieval toward an irrelevant trajectory, and so on.
+      </p>
+      <p>
+        Standard RAG-based baselines retrieve with the ambiguous question, over-focusing on the most frequent interpretation and under-covering evidence for other branches — especially when different interpretations induce <em>disjoint</em> bridge entities and documents.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- BibTeX -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3 section-title">BibTeX</h2>
+    <div class="bibtex-box">@inproceedings{park2026march,
+  title     = {MARCH: Evaluating the Intersection of Ambiguity Interpretation and Multi-hop Inference},
+  author    = {Park, Jeonghyun and Baek, Ingeol and Yoon, Seunghyun and Jang, Haeun and
+               Garimella, Aparna and Jain, Akriti and Lipka, Nedim and Lee, Hwanhee},
+  booktitle = {Proceedings of the 64th Annual Meeting of the Association for
+               Computational Linguistics (ACL)},
+  year      = {2026}
+}</div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>
+        This project page is based on the template from
+        <a href="https://github.com/nerfies/nerfies.github.io" target="_blank">Nerfies</a>
+        and adapted from
+        <a href="https://hamin2065.github.io/AMIS_project_page/" target="_blank">AMIS project page</a>.
+      </p>
+      <p>
+        <a href="https://ai.cau.ac.kr/" target="_blank">Department of Artificial Intelligence, Chung-Ang University</a>
+        &nbsp;·&nbsp;
+        <a href="https://research.adobe.com/" target="_blank">Adobe Research</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
